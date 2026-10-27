@@ -19,6 +19,7 @@ var ErrUnhealthy = errors.New("unhealthy status")
 // Target is something whose health can be probed and recorded.
 type Target interface {
 	URL() *url.URL
+	Healthy() bool
 	SetHealthy(ok bool)
 	String() string
 }
@@ -58,7 +59,9 @@ func (c *Checker) Run(ctx context.Context, targets []Target) {
 func (c *Checker) loop(ctx context.Context, t Target) {
 	ticker := time.NewTicker(c.cfg.Interval)
 	defer ticker.Stop()
-	healthy := true
+	// Start from the recorded state: a target carried over from a previous config may
+	// already be down and must count successes, not failures, to come back.
+	healthy := t.Healthy()
 	var streak int
 	for {
 		err := c.Probe(ctx, t)

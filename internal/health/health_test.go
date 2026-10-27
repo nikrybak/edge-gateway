@@ -21,6 +21,7 @@ type target struct {
 
 func (t *target) URL() *url.URL  { return t.u }
 func (t *target) String() string { return t.u.Host }
+func (t *target) Healthy() bool  { return t.healthy.Load() }
 func (t *target) SetHealthy(ok bool) {
 	t.healthy.Store(ok)
 	t.changes.Add(1)

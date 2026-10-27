@@ -190,7 +190,8 @@ func (c *Config) Validate() error {
 		errs = append(errs, &ValidationError{Field: field, Msg: fmt.Sprintf(format, args...)})
 	}
 
-	if c.Server.Listen == c.Server.AdminListen {
+	// Port 0 asks the OS for a free port, so two such listeners never collide.
+	if c.Server.Listen == c.Server.AdminListen && !strings.HasSuffix(c.Server.Listen, ":0") {
 		fail("server.admin_listen", "must differ from server.listen (%q)", c.Server.Listen)
 	}
 	if c.Server.ShutdownTimeout < 0 || c.Server.DrainDelay < 0 {

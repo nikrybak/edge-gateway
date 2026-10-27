@@ -50,7 +50,7 @@ func TestBackoff(t *testing.T) {
 		{1, 50 * time.Millisecond, 100 * time.Millisecond},
 		{2, 100 * time.Millisecond, 200 * time.Millisecond},
 		{3, 200 * time.Millisecond, 400 * time.Millisecond},
-		{5, 500 * time.Millisecond, time.Second}, // capped
+		{5, 500 * time.Millisecond, time.Second},  // capped
 		{80, 500 * time.Millisecond, time.Second}, // shift overflow stays capped
 	}
 	for _, tt := range tests {
