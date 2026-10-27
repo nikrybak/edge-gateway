@@ -1,6 +1,6 @@
 BINARY      := bin/edge-gateway
 PKG         := ./...
-STATICCHECK := honnef.co/go/tools/cmd/staticcheck@latest
+STATICCHECK := honnef.co/go/tools/cmd/staticcheck@v0.8.2
 
 .PHONY: all build test race bench lint vet staticcheck run clean
 

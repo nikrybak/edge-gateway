@@ -1,0 +1,27 @@
+server:
+  listen: ":8080"
+  admin_listen: ":9090"
+  drain_delay: 2s
+  shutdown_timeout: 15s
+
+routes:
+  - name: api
+    path_prefix: /api/
+    strip_prefix: true
+    timeout: 5s
+    upstreams:
+      - http://upstream-a:80
+      - http://upstream-b:80
+    health_check:
+      path: /health
+      interval: 2s
+      timeout: 500ms
+    retry:
+      attempts: 3
+      base_backoff: 25ms
+      max_backoff: 250ms
+      per_try_timeout: 2s
+    rate_limit:
+      requests_per_second: 10
+      burst: 20
+      key_header: X-API-Key

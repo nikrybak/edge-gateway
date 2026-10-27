@@ -1,0 +1,21 @@
+services:
+  gateway:
+    build: .
+    ports:
+      - "8080:8080"
+      - "9090:9090"
+    volumes:
+      - ./configs/docker.yaml:/etc/edge-gateway/config.yaml:ro
+    command: ["-config", "/etc/edge-gateway/config.yaml", "-watch", "2s"]
+    depends_on:
+      - upstream-a
+      - upstream-b
+    stop_grace_period: 20s
+
+  upstream-a:
+    image: traefik/whoami:v1.10
+    command: ["--name", "upstream-a"]
+
+  upstream-b:
+    image: traefik/whoami:v1.10
+    command: ["--name", "upstream-b"]
