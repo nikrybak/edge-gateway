@@ -1,0 +1,44 @@
+server:
+  listen: ":8080"
+  admin_listen: ":9090"
+  read_header_timeout: 5s
+  idle_timeout: 90s
+  shutdown_timeout: 15s
+  drain_delay: 0s
+
+routes:
+  - name: api
+    path_prefix: /api/
+    strip_prefix: true
+    timeout: 5s
+    upstreams:
+      - http://127.0.0.1:9001
+      - http://127.0.0.1:9002
+    health_check:
+      path: /health
+      interval: 2s
+      timeout: 500ms
+      healthy_threshold: 2
+      unhealthy_threshold: 2
+    passive:
+      max_failures: 3
+      eject_duration: 15s
+    breaker:
+      failure_threshold: 5
+      open_duration: 10s
+    retry:
+      attempts: 3
+      base_backoff: 25ms
+      max_backoff: 250ms
+      per_try_timeout: 2s
+    rate_limit:
+      requests_per_second: 20
+      burst: 40
+      key_header: X-API-Key
+
+  - name: admin-ui
+    host: admin.localhost
+    path_prefix: /
+    timeout: 30s
+    upstreams:
+      - http://127.0.0.1:9001
